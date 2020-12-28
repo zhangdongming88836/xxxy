@@ -1,0 +1,214 @@
+{
+	"easycom": {
+			"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+		},
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/login/index",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页"
+			}
+		},
+		{
+			"path": "pages/function/index",
+			"style": {
+				"navigationBarTitleText": "功能"
+			}
+		},
+		{
+			"path": "pages/question/index",
+			"style": {
+				"navigationBarTitleText": "题库"
+			}
+		},
+		{
+			"path": "pages/own/index",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
+		},
+		{
+			"path": "pages/components/personalInformation/index",
+			"style": {
+				"navigationBarTitleText": "个人信息"
+			}
+		},	
+		{
+			"path": "pages/components/upload/index",
+			"style": {
+				"navigationBarTitleText": "上传头像"
+			}
+		},
+		{
+			"path": "pages/components/name/index",
+			"style": {
+				"navigationBarTitleText": "姓名"
+			}
+		},
+		{
+			"path": "pages/components/sex/index",
+			"style": {
+				"navigationBarTitleText": "性别"
+			}
+		},
+		{
+			"path": "pages/components/phone/index",
+			"style": {
+				"navigationBarTitleText": "手机号"
+			}
+		},
+		{
+			"path": "pages/components/class/index",
+			"style": {
+				"navigationBarTitleText": "班级"
+			}
+		},	
+		{
+			"path": "pages/components/brief/index",
+			"style": {
+				"navigationBarTitleText": "简介"
+			}
+		},
+		{
+			"path": "pages/components/LoginName/index",
+			"style": {
+				"navigationBarTitleText": "登录名"
+			}
+		},
+		{
+			"path": "pages/components/password/index",
+			"style": {
+				"navigationBarTitleText": "密码"
+			}
+		},
+		{
+			"path": "pages/components/cancellation/index",
+			"style": {
+				"navigationBarTitleText": "注销账号"
+			}
+		},	
+		{
+			"path": "pages/components/JoinClass/index",
+			"style": {
+				"navigationBarTitleText": "加入班级"
+			}
+		},	
+		{
+			"path": "pages/index/TheArchive/index",
+			"style": {
+				"navigationBarTitleText": "课程归档"
+			}
+		},
+		{
+			"path": "pages/function/computerSide/index",
+			"style": {
+				"navigationBarTitleText": "电脑端"
+			}
+		},
+		{
+			"path": "pages/function/practice/index",
+			"style": {
+				"navigationBarTitleText": "在线练习"
+			}
+		},
+		{
+			"path": "pages/function/results/index",
+			"style": {
+				"navigationBarTitleText": "成绩册"
+			}
+		},
+		{
+			"path": "pages/function/attendance/index",
+			"style": {
+				"navigationBarTitleText": "考勤"
+			}
+		},
+		{
+			"path": "pages/function/attendance/AttendanceRecords/index",
+			"style": {
+				"navigationBarTitleText": "考勤记录"
+			}
+		},
+
+		{
+			"path": "pages/function/homework/index",
+			"style": {
+				"navigationBarTitleText": "作业"
+			}
+		},
+		
+		{
+			"path": "pages/function/clasLost/index",
+			"style": {
+				"navigationBarTitleText": "班级列表"
+			}
+		},
+		{
+			"path": "pages/function/resources/index",
+			"style": {
+				"navigationBarTitleText": "资源"
+			}
+		},
+		{
+			"path": "pages/function/clasLost/QRCode/index",
+			"style": {
+				"navigationBarTitleText": "二维码"
+			}
+		},
+		{
+			"path": "pages/components/personalInformation/email/index",
+			"style": {
+				"navigationBarTitleText": "邮箱"
+			}
+		},
+		{
+			"path": "pages/function/homework/OperationDetails/index",
+			"style": {
+				"navigationBarTitleText": "作业信息"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+	    "color": "#7A7E83",
+	    "selectedColor": "#1296db",
+	    "borderStyle": "black",
+	    "backgroundColor": "#ffffff",
+	    "list": [{
+	        "pagePath": "pages/index/index",
+	        "iconPath": "static/index.png",
+	        "selectedIconPath": "static/seindex.png",
+	        "text": "首页"
+	    },
+		// {
+	 //        "pagePath": "pages/function/index",
+	 //        "iconPath": "static/function.png",
+	 //        "selectedIconPath": "static/sefunction.png",
+	 //        "text": "功能"
+	 //    },
+		// {
+	 //        "pagePath": "pages/question/index",
+	 //        "iconPath": "static/question.png",
+	 //        "selectedIconPath": "static/sequestion.png",
+	 //        "text": "题库"
+	 //    },
+		{
+	        "pagePath": "pages/own/index",
+	        "iconPath": "static/own.png",
+	        "selectedIconPath": "static/seown.png",
+	        "text": "我的"
+	    }
+	  ]
+	}
+}
