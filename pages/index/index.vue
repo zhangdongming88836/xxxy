@@ -7,15 +7,15 @@
 			<view class="content-wrap">
 				<view class="content-wrap-btns">
 					<view class="content-wrap-btn bull-right">
-						<navigator url="../components/JoinClass/index">
+					
 							<button type="primary" @click="addBJ">加入班级</button>
-						</navigator>
+					
 					</view>
-					<view class="content-wrap-btn bull-left">
-						<navigator>
+					<!-- <view class="content-wrap-btn bull-left">
+					
 							<button type="primary" @click="TheArchive">课程列表</button>
-						</navigator>
-					</view>
+					
+					</view> -->
 				</view>
 				<!-- ************************************************** -->
 				<view class="content-wrap-nr" v-if="show">
@@ -60,15 +60,12 @@
 	export default {
 		data() {
 			return {
-				title: '对分易教学平台',
+				title: '深信院教学平台',
 				show:true,
 				list:[
 						
 				],
 			}
-		},
-		onLoad() {
-
 		},
 		methods: {
 			//获取数据的方法
@@ -77,9 +74,20 @@
 
 			// },
 			addBJ() {
-				uni.navigateTo({
-					url: '../components/JoinClass/index'
-				});
+				if( this.list.length>0){
+					console.log(this.list.length)
+					uni.showToast({
+					    title: '您已经有班级了，无法加入多个班级，如果要换班请联系您的班主任',
+						icon:"none",
+					    duration: 2000
+					});
+					return false;
+				}
+					uni.navigateTo({
+						url: '../components/JoinClass/index'
+					});
+				
+				
 			},
 			TheArchive(){
 				uni.navigateTo({
@@ -95,8 +103,14 @@
 				// uni.$emit("Detailss",val)
 			}
 		},
-		onLaunch: function() {
-			console.log('App Launch')
+		onLoad:function() {
+		  this.$http.post("/web/api/course/list",{}).then( res => {
+		  	console.log(res)
+		  	this.list = res.data.data;
+		  	if(this.list.length > 0){
+		  		this.show = false
+		  	}
+		  })
 		},
 		onShow: function() {
 			this.$http.post("/web/api/course/list",{}).then( res => {

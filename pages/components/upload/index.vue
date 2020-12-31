@@ -54,7 +54,7 @@
 				// });
 				const token = uni.getStorageSync("token")
 				uni.uploadFile({
-					url:"/api/web/api/user/photo",
+					url:"http://192.168.10.238:8087/web/api/user/photo",
 					filePath:this.imgArr[0],
 					name:"file",
 					header:{

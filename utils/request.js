@@ -2,8 +2,8 @@ import Request from './luch-request/index.js'
 const http = new Request();
 
 http.setConfig((config) => { /* config 为默认全局配置*/
-	config.baseURL = 'http://localhost:8080/api'; /* 根域名 */
-	//config.baseURL = 'http://192.168.10.238:8087'; /* 根域名 */
+	//config.baseURL = 'http://localhost:8080/api'; /* 根域名 */
+	config.baseURL = 'http://14.116.217.62:8087'; /* 根域名 */
 
 	// config.header = {
 	// 	"Content-Type": "application/x-www-form-urlencoded;charset=utf-8",

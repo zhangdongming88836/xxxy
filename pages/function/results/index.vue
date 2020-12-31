@@ -3,7 +3,7 @@
 		<view class="myPage">
 			<view class="myhear">
 				<view>
-					<text>对分易教学平台</text>
+					<text>深信院教学平台</text>
 				</view>
 			</view>
 		</view>
@@ -168,6 +168,6 @@
 		position: fixed;
 		z-index: 1;
 		background-color: #EEFFBB;
-		top: 80rpx;
+		top:0rpx;
 	}
 </style>

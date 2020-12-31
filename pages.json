@@ -172,6 +172,18 @@
 			"style": {
 				"navigationBarTitleText": "作业信息"
 			}
+		},
+		{
+			"path": "pages/function/homework/ToFinish/index",
+			"style": {
+				"navigationBarTitleText": "提交作业"
+			}
+		},
+		{
+			"path": "pages/function/practice/testPaper/index",
+			"style": {
+				"navigationBarTitleText": "试卷"
+			}
 		}
 	],
 	"globalStyle": {

@@ -3,7 +3,7 @@
 		<view class="myPage">
 			<view class="myhear">
 				<view>
-					<text>对分易教学平台</text>
+					<text>深信院教学平台</text>
 				</view>
 			</view>
 		</view>
@@ -22,13 +22,13 @@
 				<view class="JobList" v-for="item in jobList" :key="item.id">
 					<text>{{item.jobName}}</text>
 					<view class="JobList-explain">
-						<text class="Tips">个人作业</text>
-						<text class="Tipsa">指定格式</text>
-						<text class="Tipsb">教师评分</text>
+						<text class="Tips" style="font-size: 15rpx;">个人作业</text>
+						<text class="Tipsa" style="font-size: 15rpx;">指定格式</text>
+						<text class="Tipsb" style="font-size: 15rpx;">教师评分</text>
 					</view>
 					<view class="JobList-explain">
-						<text >截至日期：</text>
-						<text >{{item.deadline}}</text>
+						<text>截至日期：</text>
+						<text>{{item.deadline}}</text>
 					</view>
 					<!-- <view class="JobList-explain">
 						<text >已提交人数：</text>
@@ -47,9 +47,10 @@
 						<text >{{item.score}}</text>
 					</view> -->
 					<view class="JobList-explain-right">
-						<text >评语：----></text>
-						<view >
-							<button type="primary" size="mini" @click="see({jobId:item.jobId,courseName:item.courseName})">查看</button>
+						<text>评语：----></text>
+						<view>
+							<button v-if="item.statusub == 1" type="primary" size="mini" @click="ToFinish({jobId:item.jobId,courseName:item.courseName})">去完成</button>
+							<button v-else type="primary" size="mini" @click="see({jobId:item.jobId,courseName:item.courseName})">查看</button>
 						</view>
 					</view>
 				</view>
@@ -68,38 +69,70 @@
 			return {
 				gradeName: "",
 				courseName: "",
-				jobList:[],
+				jobList: [],
+				courseId:""
 			}
 		},
 		methods: {
-         see(val){
-			 uni.navigateTo({
-			     url: `/pages/function/homework/OperationDetails/index?jobId=${val.jobId}&courseName=${val.courseName}`
-			 });
-		 },
-		},
-		onLoad: function(val) {
-			this.$http.post("/web/api/job/list", {
-				courseId: val.id
-			}, {
-				header: {
-					"Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
-				}
-			}).then(res => {
-				console.log(res.data.data)
-				this.gradeName = res.data.data.grade.gradeName;
-				this.courseName = res.data.data.course.courseName;
-				this.jobList = 
-				res.data.data.jobList.map( item => {
-					item.checkTime = formatDate(item.checkTime);
-					item.deadline = formatDate(item.deadline);
-					item.submitTime = formatDate(item.submitTime)
-					return item
+			see(val) {
+				uni.navigateTo({
+					url: `/pages/function/homework/OperationDetails/index?jobId=${val.jobId}&courseName=${val.courseName}`
+				});
+			},
+			ToFinish(val) {
+				uni.navigateTo({
+					url: `/pages/function/homework/ToFinish/index?jobId=${val.jobId}&courseName=${val.courseName}`
+				});
+			 },
+			},
+			onLoad: function(val) {
+				this.courseId = val.id;
+				this.$http.post("/web/api/job/list", {
+					courseId: val.id
+				}, {
+					header: {
+						"Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+					}
+				}).then(res => {
+					console.log(res.data.data)
+					this.gradeName = res.data.data.grade.gradeName;
+					this.courseName = res.data.data.course.courseName;
+					this.jobList =
+						res.data.data.jobList.map(item => {
+							item.checkTime = formatDate(item.checkTime);
+							item.deadline = formatDate(item.deadline);
+							item.submitTime = formatDate(item.submitTime)
+							return item
+						})
+
 				})
+			},
+			onShow:function(){
+			  uni.$once("btn", (val) => {
+				  console.log(val)
+				  this.btn = val.btn;
+			  })
+				this.$http.post("/web/api/job/list", {
+					courseId: this.courseId
+				}, {
+					header: {
+						"Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+					}
+				}).then(res => {
+					console.log(res.data.data)
+					this.gradeName = res.data.data.grade.gradeName;
+					this.courseName = res.data.data.course.courseName;
+					this.jobList =
+						res.data.data.jobList.map(item => {
+							item.checkTime = formatDate(item.checkTime);
+							item.deadline = formatDate(item.deadline);
+							item.submitTime = formatDate(item.submitTime)
+							return item
+						})
 				
-			})
+				})
+			}
 		}
-	}
 </script>
 
 <style>
@@ -137,6 +170,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		margin-bottom: 100rpx;
 		justify-content: flex-start;
 	}
 
@@ -146,6 +180,8 @@
 		flex-direction: column;
 		align-items: flex-start;
 		justify-content: space-between;
+		padding-top:10rpx;
+		border-bottom: 1rpx solid #C8C9CC;
 	}
 
 	.JobList-explain {
@@ -162,26 +198,29 @@
 		background-color: #C0C4CC;
 	}
 
-	.Tipsa{
+	.Tipsa {
 		font-size: 8rpx;
-		margin-left:10rpx;
+		margin-left: 10rpx;
 		padding: 10rpx;
-		background-color:#DD6161;
+		background-color: #DD6161;
 	}
-  .Tipsb{
-	font-size: 8rpx;
-	margin-left:10rpx;
-  	padding: 10rpx;
-  	background-color: #C0C4CC;
-  }
-  .JobList-explain-right{
-	  width: 100%;
-	 display: flex;
-	 margin: 10rpx 0 0 0;
-	 flex-direction: row;
-	 align-items: center;
-	 justify-content: space-between;
-  }
+
+	.Tipsb {
+		font-size: 8rpx;
+		margin-left: 10rpx;
+		padding: 10rpx;
+		background-color: #C0C4CC;
+	}
+
+	.JobList-explain-right {
+		width: 100%;
+		display: flex;
+		margin: 10rpx 0 0 0;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
 	/***************************************************/
 	.myPage {
 		display: flex;
@@ -198,6 +237,6 @@
 		position: fixed;
 		z-index: 1;
 		background-color: #EEFFBB;
-		top: 80rpx;
+		top:0rpx;
 	}
 </style>

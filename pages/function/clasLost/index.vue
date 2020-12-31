@@ -3,7 +3,7 @@
 		<view class="myPage">
 			<view class="myhear">
 				<view>
-					<text>对分易教学平台</text>
+					<text>深信院教学平台</text>
 				</view>
 			</view>
 		</view>
@@ -31,9 +31,9 @@
 		</view>
 		<!--  **********************************************************-->
 		<view class="cls-operation">
-			<view class="cls-operation-btn" @click="ClassQRCode">
+			<!-- <view class="cls-operation-btn" @click="ClassQRCode">
 				<button type="primary" size="mini">班级二维码</button>
-			</view>
+			</view> -->
 			<view class="" @click="signOut">
 				<button type="primary" size="mini">我要退班</button>
 			</view>
@@ -112,6 +112,9 @@
 									    title: res.data.msg,
 										icon:"none",
 									    duration: 2000
+									});
+									uni.reLaunch({
+									    url: '/pages/index/index'
 									});
 								}
 							})
@@ -205,6 +208,7 @@
 	/*********************************************************************************/
 	.cls-operation {
 		width: 100%;
+		padding-top: 10rpx;
 		display: flex;
 		flex-direction: row;
 		align-items: center;

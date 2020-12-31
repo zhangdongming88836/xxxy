@@ -3,7 +3,7 @@
 		<view class="myPage">
 			<view class="myhear">
 				<view>
-					<text>对分易教学平台</text>
+					<text>深信院教学平台</text>
 				</view>
 			</view>
 			<view class="information">
@@ -58,7 +58,7 @@
 						<text>作业</text>
 					</view>
 				</view>
-				<view class="students" @click="attendance">
+				<view class="students" @click="attendance(Details.courseId)">
 					<view class="">
 						<image src="../../static/multiFunction/kq.png" mode="" class="icon"></image>
 					</view>
@@ -77,7 +77,7 @@
 						<text>成绩册</text>
 					</view>
 				</view>
-				<view class="students" @click="practice">
+				<view class="students" @click="practice({courseId:Details.courseId,courseName:Details.courseName})">
 					<view class="">
 						<image src="../../static/multiFunction/lx.png" mode="" class="icon"></image>
 					</view>
@@ -222,9 +222,11 @@
 			}
 		},
 		methods:{
-			practice(){
+			//在线练习
+			practice(val){
+				console.log(val)
 				uni.navigateTo({
-					url: "./practice/index"
+					url: `./practice/index?courseId=${val.courseId}&courseName=${val.courseName}`
 				});
 			},
 			//班级
@@ -240,9 +242,9 @@
 				});
 			},
 			//考勤
-			attendance(){
+			attendance(val){
 				uni.navigateTo({
-					url: "./attendance/index"
+					url: "./attendance/index?courseId="+val
 				});
 			},
 			//成绩

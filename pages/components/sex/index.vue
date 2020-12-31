@@ -2,7 +2,7 @@
 	<view class="">
 		<view class="myhear">
 			<view>
-				<text>对分易教学平台</text>
+				<text>深信院教学平台</text>
 			</view>
 		</view>
 		<view class="sex">

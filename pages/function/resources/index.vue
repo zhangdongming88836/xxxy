@@ -4,7 +4,7 @@
 			<view class="myPage">
 				<view class="myhear">
 					<view>
-						<text>对分易教学平台</text>
+						<text>深信院教学平台</text>
 					</view>
 				</view>
 			</view>
@@ -22,14 +22,16 @@
 		<view class="OpenResources">
 			<view class="OpenResourcesList" v-for="item in resourceList" :key="item.id">
 				<view class="">
-					<image :src="'http://192.168.10.238:8087/web/'+item.saveUrl" mode="" class="OpenResourcesList-img"></image>
+					<image :src="'http://192.168.10.238:8087/web/'+item.visitUrl" mode="" class="OpenResourcesList-img"></image>
 				</view>
 				<view class="">
-					<view class="">
+					<view class="AttachmentName-title" >
 						<text>{{item.resourceName}}</text>
 					</view>
 					<view class="">
 						<text>{{item.createTime}}</text>
+					</view>
+					<view class="">
 						<text style="padding-left:10rpx;">{{item.updateName}}</text>
 					</view>
 				</view>
@@ -54,55 +56,80 @@
 		methods: {
 			//下载
 			download(val) {
-				 console.log(val)
-				const token = uni.getStorageSync("token")
-				uni.downloadFile({
-					url: `web/api/resource/download/${val}`, //下载地址接口返回
-					header:{
-						'token':token
-					},
-					success: (data) => {
-						console.log(data)
-						if (data.statusCode === 200) {
-							//文件保存到本地
-							uni.saveFile({
-								tempFilePath: data.tempFilePath, //临时路径
-								success: function(res) {
-									console.log(res)
-									uni.showToast({
-										icon: 'none',
-										mask: true,
-										title: '文件已保存：' + res.savedFilePath, //保存路径
-										duration: 3000,
+				uni.downloadFile({//下载
+							url:`http://192.168.10.238:8087/web/api/resource/download/${val}`, //图片下载地址
+							success: res => {
+								if (res.statusCode === 200) {
+									uni.saveImageToPhotosAlbum({//保存图片到系统相册。
+										filePath: res.tempFilePath,//图片文件路径
+										success: function() {
+											uni.showToast({
+												title: '图片保存成功',
+												icon: 'none',
+											});
+										},
+										fail: function(e) {
+											console.log(e);
+											uni.showToast({
+												title: '图片保存失败',
+												icon: 'none',
+											});
+										}
 									});
-									setTimeout(() => {
-										//打开文档查看
-										uni.openDocument({
-											filePath: res.savedFilePath,
-											success: function(res) {
-												// console.log('打开文档成功');
-											}
-										});
-									}, 3000)
 								}
-							});
-						}
-					},
-					fail: (err) => {
-						console.log(err);
-						uni.showToast({
-							icon: 'none',
-							mask: true,
-							title: '失败请重新下载',
+							}
 						});
-					},
-				});
+				
+				
+				//  console.log(val)
+				// const token = uni.getStorageSync("token")
+				// uni.downloadFile({
+				// 	url: `web/api/resource/download/${val}`, //下载地址接口返回
+				// 	header:{
+				// 		'token':token
+				// 	},
+				// 	success: (data) => {
+				// 		console.log(data)
+				// 		if (data.statusCode === 200) {
+				// 			//文件保存到本地
+				// 			uni.saveFile({
+				// 				tempFilePath: data.tempFilePath, //临时路径
+				// 				success: function(res) {
+				// 					console.log(res)
+				// 					uni.showToast({
+				// 						icon: 'none',
+				// 						mask: true,
+				// 						title: '文件已保存：' + res.savedFilePath, //保存路径
+				// 						duration: 3000,
+				// 					});
+				// 					setTimeout(() => {
+				// 						//打开文档查看
+				// 						uni.openDocument({
+				// 							filePath: res.savedFilePath,
+				// 							success: function(res) {
+				// 								// console.log('打开文档成功');
+				// 							}
+				// 						});
+				// 					}, 3000)
+				// 				}
+				// 			});
+				// 		}
+				// 	},
+				// 	fail: (err) => {
+				// 		console.log(err);
+				// 		uni.showToast({
+				// 			icon: 'none',
+				// 			mask: true,
+				// 			title: '失败请重新下载',
+				// 		});
+				// 	},
+				// });
 			},
 			//帮助
 			help(){
 				uni.showModal({
 					title: '提示',
-					content: '课程资源中的各类文件在手机端的打开方式：课程资源中的各类文件在手机端的打开方式：课程资源中的各类文件在手机端的打开方式：课程资源中的各类文件在手机端的打开方式：课程资源中的各类文件在手机端的打开方式：',
+					content: '只能下载图片格式的附件(其他格式请到电脑上下载)，图片下载后请到相册查找',
 					success: function(res) {
 						if (res.confirm) {
 							console.log('用户点击确定');
@@ -130,7 +157,6 @@
 				 console.log(res.data.data)
 				this.resourceList =
 					res.data.data.map(item => {
-
 						item.createTime = formatDate(item.createTime)
 						return item
 					})
@@ -184,8 +210,9 @@
 	}
 
 	.OpenResourcesList-img {
-		width: 50rpx;
-		height: 50rpx;
+		width: 100rpx;
+		height: 100rpx;
+		
 	}
 
 	.resources-header {
@@ -218,5 +245,11 @@
 	.search-img {
 		width: 50rpx;
 		height: 50rpx;
+	}
+	.AttachmentName-title{
+		width:200rpx;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
 	}
 </style>
