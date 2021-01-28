@@ -4,7 +4,7 @@
 			<view class="myPage">
 				<view class="myhear">
 					<view>
-						<text>深信院教学平台</text>
+						<text>{{title}}</text>
 					</view>
 				</view>
 			</view>
@@ -21,22 +21,29 @@
 		</view> -->
 		<view class="OpenResources">
 			<view class="OpenResourcesList" v-for="item in resourceList" :key="item.id">
-				<view class="">
-					<image :src="'http://192.168.10.238:8087/web/'+item.visitUrl" mode="" class="OpenResourcesList-img"></image>
+				<!-- <view class="">
+					<image :src="'http://14.116.217.62:8087/web/'+item.visitUrl" mode="" class="OpenResourcesList-img"></image>
+				</view> -->
+				<view class="" >
+					<image @click="previewPictures(item.visitUrl)"   v-if="item.isimage == 'png' || item.isimage == 'bmp' || item.isimage == 'jpg' || item.isimage == 'jpeg '|| item.isimage == 'gif' "   :src="'http://14.116.217.62:8087/web/'+item.visitUrl" mode="" class="OpenResourcesList-img"></image>
+				    <video  v-else-if="item.isimage == 'mp4' " :src="'http://14.116.217.62:8087/web/'+item.visitUrl" controls class="OpenResourcesList-mp4"></video>
+				    <audio :name="item.resourceName"  v-else  :src="'http://14.116.217.62:8087/web/'+item.visitUrl"  controls></audio>
 				</view>
-				<view class="">
-					<view class="AttachmentName-title" >
-						<text>{{item.resourceName}}</text>
+				<view class="explain">
+					<view class="">
+						<view class="AttachmentName-title" >
+							<text>附件名字：{{item.resourceName}}</text>
+						</view>
+						<view class="">
+							<text>创建时间：{{item.createTime}}</text>
+						</view>
+						<view class="">
+							<text style="padding-left:10rpx;">{{item.updateName}}</text>
+						</view>
 					</view>
 					<view class="">
-						<text>{{item.createTime}}</text>
+						<text style="color: #2979FF;" @click="download(item.resourceId)">下载</text>
 					</view>
-					<view class="">
-						<text style="padding-left:10rpx;">{{item.updateName}}</text>
-					</view>
-				</view>
-				<view class="">
-					<text style="color: #2979FF;" @click="download(item.resourceId)">下载</text>
 				</view>
 			</view>
 		</view>
@@ -51,27 +58,49 @@
 		data() {
 			return {
 				resourceList: [],
+				title:""
 			}
 		},
 		methods: {
+			//预览图片
+			previewPictures(val){
+				
+					
+					uni.previewImage({
+					         urls:['http://14.116.217.62:8087/web/'+ val],
+					         longPressActions: {
+					             success: function(data) {
+					                 console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
+					             },
+					             fail: function(err) {
+					                 console.log(err.errMsg);
+					             }
+					         }
+					     });
+					  
+			
+			
+			},
+			
+			
 			//下载
 			download(val) {
 				uni.downloadFile({//下载
-							url:`http://192.168.10.238:8087/web/api/resource/download/${val}`, //图片下载地址
+							url:`http://14.116.217.62:8087/web/api/resource/download/${val}`, //图片下载地址
 							success: res => {
 								if (res.statusCode === 200) {
 									uni.saveImageToPhotosAlbum({//保存图片到系统相册。
 										filePath: res.tempFilePath,//图片文件路径
 										success: function() {
 											uni.showToast({
-												title: '图片保存成功',
+												title: '下载成功',
 												icon: 'none',
 											});
 										},
 										fail: function(e) {
 											console.log(e);
 											uni.showToast({
-												title: '图片保存失败',
+												title: '下载失败',
 												icon: 'none',
 											});
 										}
@@ -129,7 +158,7 @@
 			help(){
 				uni.showModal({
 					title: '提示',
-					content: '只能下载图片格式的附件(其他格式请到电脑上下载)，图片下载后请到相册查找',
+					content: '图片下载后请到相册查找,非图片文件请到手机文件管理中查找',
 					success: function(res) {
 						if (res.confirm) {
 							console.log('用户点击确定');
@@ -158,15 +187,27 @@
 				this.resourceList =
 					res.data.data.map(item => {
 						item.createTime = formatDate(item.createTime)
+						item.isimage = item.resourceName.slice(item.resourceName.lastIndexOf(".") + 1).toLowerCase();
 						return item
 					})
 
 			})
+			this.$http.get("/web/api/info/info").then( res => {
+				console.log(res);
+				this.title = res.data.data.name;
+			});
 		}
 	}
 </script>
 
 <style scoped lang="scss">
+	.explain{
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
 	.myPage {
 		display: flex;
 		flex-direction: column;
@@ -195,6 +236,7 @@
 	//公开资源
 	.OpenResources {
 		padding: 0 30rpx 0 30rpx;
+		margin-top:5rpx;
 		display: flex;
 		flex-direction: column;
 	}
@@ -203,18 +245,23 @@
 		padding-top: 10rpx;
 		padding-bottom: 10rpx;
 		display: flex;
-		flex-direction: row;
+		flex-direction: column;
 		justify-content: space-between;
 		align-items: center;
-		border-bottom: 1rpx solid #C8C9CC;
+		
+		 border-bottom: 1rpx solid #C8C9CC;
 	}
 
 	.OpenResourcesList-img {
-		width: 100rpx;
-		height: 100rpx;
+		width:100rpx;
+		height:100rpx;
 		
 	}
-
+    .OpenResourcesList-mp4 {
+    	width:500rpx;
+    	height:200rpx;
+    	
+    }
 	.resources-header {
 		width: 100%;
 		display: flex;
@@ -247,7 +294,7 @@
 		height: 50rpx;
 	}
 	.AttachmentName-title{
-		width:200rpx;
+		width:350rpx;
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;

@@ -2,7 +2,7 @@
 	<view class="">
 		<view class="myhear">
 			<view>
-				<text>深信院教学平台</text>
+				<text>{{title}}</text>
 			</view>
 		</view>
 		<view class="sex">
@@ -37,7 +37,8 @@
 	export default {
 		data() {
 			return {
-				sex:""
+				sex:"",
+				title:""
 			}
 		},
 		methods: {
@@ -64,6 +65,12 @@
 				})
 			},
 		},
+		onLoad:function(){
+			this.$http.get("/web/api/info/info").then( res => {
+				console.log(res);
+				this.title = res.data.data.name;
+			});
+		}
 		// onLoad:function(){
 		// 	this.$http.get("/web/api/user/personage").then( res => {
 		// 		 console.log(res.data.data)

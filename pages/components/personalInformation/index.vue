@@ -2,7 +2,7 @@
 	<view class="myPage">
 		<view class="myhear">
 			<view>
-				<text>深信院教学平台</text>
+				<text>{{title}}</text>
 			</view>
 		</view>
 		<!-- 1 -->
@@ -12,7 +12,7 @@
 			</view>
 			<view class="portrait-leftt">
 				<view class="">
-					<image class="userImge" :src="'http://192.168.10.238:8087/web/'+personal.avatar" mode=""></image>
+					<image class="userImge" :src="'http://14.116.217.62:8087/web/'+personal.avatar" mode=""></image>
 				</view>
 				<view class="">
 					<text style="font-size: 25rpx;">></text>
@@ -182,6 +182,7 @@
 		data(){
 			return {
 				personal:{},
+				title:""
 			}
 		},
 		methods:{
@@ -237,6 +238,10 @@
 				// console.log(res.data.data)
 				this.personal = res.data.data;
 			})
+			this.$http.get("/web/api/info/info").then( res => {
+				console.log(res);
+				this.title = res.data.data.name;
+			});
 		},
 		onShow:function(){
 			this.$http.get("/web/api/user/personage").then( res => {

@@ -1,5 +1,4 @@
 export function formatDate (value) {
-	console.log(value,'===')
   let date = new Date(value)
   let y = date.getFullYear()
   let MM = date.getMonth() + 1

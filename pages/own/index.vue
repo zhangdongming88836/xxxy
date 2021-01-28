@@ -2,13 +2,13 @@
 	<view class="myPage">
 		<view class="myhear">
 			<view>
-				<text>深信院教学平台</text>
+				<text>{{title}}</text>
 			</view>
 		</view>
-		<view class="user" @click="PersonalInformation">
+		<view class="user" >
 			<view class="user-left">
-				<view>
-					<image class="userImge" :src="'http://192.168.10.238:8087/web/'+personal.avatar"></image>
+				<view @click="previewPictures">
+					<image class="userImge" :src="'http://14.116.217.62:8087//web/'+personal.avatar"></image>
 				</view>
 				<view class="user-lef">
 					<view class="user-lef-to">
@@ -23,7 +23,7 @@
 					</view> -->
 				</view>
 			</view>
-			<view class="modify">
+			<view class="modify" @click="PersonalInformation">
 				<text>修改个人信息></text>
 			</view>
 		</view>
@@ -230,10 +230,26 @@
 		data(){
 			return {
 				//个人信息
-			 personal:{},	
+			 personal:{},
+			 title:"",
 			}
 		},
 		methods:{
+//预览图片
+			previewPictures(){
+				console.log(11111111111)
+				   uni.previewImage({
+				            urls:['http://14.116.217.62:8087/web/'+ this.personal.avatar ],
+				            longPressActions: {
+				                success: function(data) {
+				                    console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
+				                },
+				                fail: function(err) {
+				                    console.log(err.errMsg);
+				                }
+				            }
+				        });
+			},
 		 //跳转个人信息页面 
 		  PersonalInformation(){
 			  uni.navigateTo({
@@ -256,6 +272,7 @@
 						  this.$http.get("/web/api/logout").then( res => {
 							  console.log(res)
 							  if( res.data.code == 200){
+								  uni.removeStorageSync("token");
 								  uni.reLaunch({
 								      url: '/pages/login/index'
 								  });
@@ -277,7 +294,11 @@
 			this.$http.get("/web/api/user/personage").then( res => {
 				// console.log(res.data.data)
 				this.personal = res.data.data;
-			})
+			});
+			this.$http.get("/web/api/info/info").then( res => {
+				console.log(res);
+				this.title = res.data.data.name;
+			});
 		},
 		onShow:function(){
 			this.$http.get("/web/api/user/personage").then( res => {

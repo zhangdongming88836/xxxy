@@ -3,7 +3,7 @@
 		<view class="myPage">
 			<view class="myhear">
 				<view>
-					<text>深信院教学平台</text>
+					<text>{{title}}</text>
 				</view>
 			</view>
 		</view>
@@ -44,12 +44,12 @@
 		<!-- -************************************************************** -->
 		<view class="introduce" v-if="list.length>0" >
 			<view class="introduce-content" v-for="item in list" :key="item.id">
-				<view class="">
-					<image :src="'http://192.168.10.238:8087/web/'+item.avatar"  mode="" class="introduce-img"></image>
+				<view class="" @click="previewPictures(item.avatar)">
+					<image :src="'http://14.116.217.62:8087/web/'+item.avatar"  mode="" class="introduce-img"></image>
 				</view>
 				<view class="introduce-left" >
 					<view class="introduce-content-tit">
-						<view class="">
+						<view class="" >
 							<image :src=" item.sex == 0 ? '/static/function/ClassList/male.png' : '/static/function/ClassList/female.png'" mode="" class="introduce-icon"></image>
 						</view>
 						<view class="introduce-uname">
@@ -85,13 +85,31 @@
 			  //班级
 			  grade:{},
 			  //课程名字
-			  courseName:""
+			  courseName:"",
+			  title:""
 			}
 		},
 		onLoad() {
 
 		},
 		methods: {
+		    
+			//预览图片
+			previewPictures(val){
+				console.log(val)
+				   uni.previewImage({
+				            urls:['http://14.116.217.62:8087/web/'+ val ],
+				            longPressActions: {
+				                success: function(data) {
+				                    console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
+				                },
+				                fail: function(err) {
+				                    console.log(err.errMsg);
+				                }
+				            }
+				        });
+			},
+		
 			ClassQRCode() {
 				uni.navigateTo({
 					url: "./QRCode/index"
@@ -153,6 +171,10 @@
 		onLoad: function(val) {
 			console.log('App onLoad')
 			this.courseName = val.courseName;
+			this.$http.get("/web/api/info/info").then( res => {
+				console.log(res);
+				this.title = res.data.data.name;
+			});
 		},
 		onShow: function() {
 			 console.log('App Show')

@@ -3,7 +3,7 @@
 		<view class="myPage">
 			<view class="myhear">
 				<view>
-					<text>深信院教学平台</text>
+					<text>{{title}}</text>
 				</view>
 			</view>
 		</view>
@@ -14,12 +14,26 @@
 				</view>
 			</view>
 			<view class="homework-clas">
-				<view class="">
+			<!-- 	<view class="" style="background-color: #007AFF; color: #FFFFFF; padding: 10rpx;">
 					<text>{{gradeName}}</text>
-				</view>
+				</view> -->
 			</view>
 		</view>
-        <view class="">
+		<view class="Examination-results" v-for="iteum in  HomeworkResults" :key="iteum.id">
+			<view class="">
+				<text>学号：</text>
+				<text>{{iteum.resultLogin}}</text>
+			</view>
+			<view class="">
+				<text>姓名：</text>
+				<text>{{iteum.resultName}}</text>
+			</view>
+			<view class="">
+				<text>分数：</text>
+				<text>{{iteum.moveTotal}}</text>
+			</view>
+		</view>
+  <!--      <view class="">
         	<uni-segmented-control :current="current" :values="items" @clickItem="onClickItem" style-type="button" active-color="#007AFF"></uni-segmented-control>
         	<view class="">
         		<view v-if="current === 0">
@@ -34,8 +48,12 @@
 								<text>{{item.errorNum}}</text>
         					</view>
 							<view class="">
-								<text>准确率：</text>
+								<text>正确率：</text>
 								<text>{{item.accuracy}}</text>
+							</view>
+							<view class="">
+								<text>提交时间：</text>
+								<text>{{item.subTime}}</text>
 							</view>
         				</view>
         			</view>
@@ -43,8 +61,8 @@
         		<view v-if="current === 1">
         			<view class="Examination-results" v-for="iteum in  HomeworkResults" :key="iteum.id">
         				<view class="">
-        					<text>姓名：</text>
-							<text>{{iteum.userName}}</text>
+        					<text>作业名称：</text>
+							<text>{{iteum.jobName}}</text>
         				</view>
         				<view class="">
         					<text>得分：</text>
@@ -57,7 +75,7 @@
         			</view>
         		</view>
         	</view>
-        </view>
+        </view> -->
 	</view>
 </template>
 
@@ -77,6 +95,7 @@
 				ExaminationResults:[],
 				//作业成绩
 				HomeworkResults:[],
+				title:""
 			}
 		},
 		methods: {
@@ -88,18 +107,31 @@
 			}
 		},
 		onLoad: function(val) {
+			console.log(val)
 			this.courseName = val.courseName;
-			this.$http.post("/web/api/topic/results").then(res => {
+		   let value = uni.getStorageSync("loginName"); 
+			console.log(value);
+			this.$http.get(`/web/api/result/totalScore/${value}`).then(res => {
 				 console.log(res.data.data)
-				 this.gradeName = res.data.data.grade.gradeName;
-				 this.ExaminationResults = res.data.data.recordList;
-				 this.HomeworkResults = 
-				 res.data.data.pushJobList.map(item => {
+				 this.HomeworkResults = res.data.data
+				 // this.gradeName = res.data.data.grade.gradeName;
+				 // this.ExaminationResults = 
+				 //    res.data.data.recordList.map(item => {
 				 
-				 	item.checkTime = formatDate(item.checkTime)
-				 	return item
-				 })
+				 // 	item.subTime = item.subTime == null ? "" : formatDate(item.subTime)
+				 // 	return item
+				 // })
+				 // this.HomeworkResults = 
+				 // res.data.data.pushJobList.map(item => {
+				 
+				 // 	item.checkTime = item.checkTime == null ? "" : formatDate(item.checkTime)
+				 // 	return item
+				 // })
 			})
+			this.$http.get("/web/api/info/info").then( res => {
+				console.log(res);
+				this.title = res.data.data.name;
+			});
 		}
 	}
 </script>
@@ -150,7 +182,7 @@
 	   align-items:flex-start;
 	   justify-content: space-between;
 	   padding:20rpx 30rpx 20rpx 30rpx;
-	   border:1rpx solid #C8C9CC;
+	    border-bottom:1rpx solid #C8C9CC; 
    }
 	/***************************************************/
 	.myPage {

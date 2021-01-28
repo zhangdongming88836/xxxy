@@ -184,6 +184,42 @@
 			"style": {
 				"navigationBarTitleText": "试卷"
 			}
+		},
+		{
+			"path": "pages/function/beOnDuty/index",
+			"style": {
+				"navigationBarTitleText": "执勤"
+			}
+		},
+		{
+			"path": "pages/function/beOnDuty/ResultsPage/index",
+			"style": {
+				"navigationBarTitleText": "扫码结果"
+			}
+		},
+		{
+			"path": "pages/function/homework/modify/index",
+			"style": {
+				"navigationBarTitleText": "修改作业"
+			}
+		},
+		{
+			"path": "pages/function/homework/ExcellentHomework/index",
+			"style": {
+				"navigationBarTitleText": "优秀作业列表"
+			}
+		},
+		{
+			"path": "pages/function/homework/ExcellentHomework/excellentList/index",
+			"style": {
+				"navigationBarTitleText": "优秀作业详情"
+			}
+		},
+		{
+			"path": "pages/login/register/index",
+			"style": {
+				"navigationBarTitleText": "注册"
+			}
 		}
 	],
 	"globalStyle": {

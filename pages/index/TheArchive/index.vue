@@ -3,7 +3,7 @@
 		<view class="myPage">
 			<view class="myhear">
 				<view>
-					<text>深信院教学平台</text>
+					<text>{{title}}</text>
 				</view>
 			</view>
 		</view>
@@ -35,6 +35,7 @@
 			return {
               list:[],
 			  show:false,
+			  title:""
 			}
 		},
 		methods: {
@@ -51,6 +52,10 @@
 				console.log(res)
 				this.list = res.data.data;
 			})
+			this.$http.get("/web/api/info/info").then( res => {
+				console.log(res);
+				this.title = res.data.data.name;
+			});
 		},
 	}
 </script>

@@ -3,7 +3,7 @@
 		<view class="myPage">
 			<view class="myhear">
 				<view>
-					<text>深信院教学平台</text>
+					<text>{{title}}</text>
 				</view>
 			</view>
 		</view>
@@ -22,12 +22,19 @@
 				<text>作业内容：{{JobInformation.problem}}</text>
 			</view>
 			<view class="">
-				<text>作业附件：</text>
+				<text>老师作业附件：</text>
 			</view>
-			<view class="enclosure">
-				<text class="ClickDownload">下载</text>
-				<image :src="'http://192.168.10.238:8087/web/file/'+JobInformation.saveUrl"  mode="" class="enclosureImg"></image>
-				<text style="margin: 15rpx;" class="resourceName">{{JobInformation.resourceName}}</text>
+			<view class="enclosure" v-for="item in resourceList" :key="item.id">
+				<view class="">
+					<image @click="previewPictures(item.visitUrl)" v-if="item.isimage == 'png' || item.isimage == 'bmp' || item.isimage == 'jpg' || item.isimage == 'jpeg '|| item.isimage == 'gif' "
+					 :src="'http://14.116.217.62:8087/web/file/'+item.saveUrl" class="enclosureImg"></image>
+					<video v-else-if="item.isimage == 'mp4' " :src="'http://14.116.217.62:8087/web/'+item.visitUrl" controls></video>
+					<audio :name="item.resourceName" v-else :src="'http://14.116.217.62:8087/web/'+item.visitUrl" controls></audio>
+				</view>
+				<view class="explain">
+					<text style="margin: 15rpx;" class="resourceName">{{item.resourceName}}</text>
+					<text class="ClickDownload" @click="DownloadTeacher(JobInformation.jobId)">下载</text>
+				</view>
 			</view>
 			<view class="">
 				<text>满分值：100.00分</text>
@@ -51,17 +58,17 @@
 				<text>逾期修改：允许</text>
 			</view>
 		</uni-card>
-		<uni-card title="学作业(长文本请从别的文件中复制过来)">
+		<uni-card title="写作业(长文本请从别的文件中复制过来)">
 			<!-- <view class="">
 				<text>首次提交时间：测试</text>
 			</view> -->
-		<!-- 	<view class="">
+			<!-- 	<view class="">
 				<text>提交时间：{{JobInformation.submitTime|formDate}}</text>
 			</view> -->
 			<view class="" style="border-bottom: 1rpx solid #C8C9CC;">
 				<!-- <uni-notice-bar :text="JobInformation.content"></uni-notice-bar> -->
-				<textarea v-model="content"  auto-height  placeholder="请输入或粘贴作业文本最多8000字" maxlength="8000"/>
-			</view>
+				<textarea v-model="content" auto-height placeholder="请输入或粘贴作业文本最多8000字" maxlength="8000" />
+				</view>
 			<view class="" style="margin-top:30rpx;">
 				<button type="primary" size="mini" @click="UploadAttachment">上传附件</button>
 			</view>
@@ -98,7 +105,7 @@
 				<text>3、拍作业照片时相机分辨率可以调低一点,降低照片文件大小.</text>
 			</view>
 			<view class="">
-				<text>4、如果手机端交不了,还可以登录深圳职业信息技术网站www.dajdjai.com交作业。</text>
+				<text>4、如果手机端交不了,还可以登录端脑端提交</text>
 			</view>
 		</uni-card>
 	</view>
@@ -118,15 +125,63 @@
 		data() {
 			return {
 				JobInformation: {},
+				resourceList:[],
 				courseName:"",
 				content:"",
 				btn:0,
 				jobId:"",
+				courseId:"",
 				imgArr: [],
-				file:{}
+				file:{},
+				title:""
 			}
 		},
 		methods: {
+			//图片预览
+			previewPictures(val){
+				uni.previewImage({
+				         urls:['http://14.116.217.62:8087/web/'+ val],
+				         longPressActions: {
+				             success: function(data) {
+				                 console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
+				             },
+				             fail: function(err) {
+				                 console.log(err.errMsg);
+				             }
+				         }
+				     });
+				  
+				
+			},
+			//下载老师的附件
+			DownloadTeacher(val){
+				console.log(val)
+				uni.downloadFile({//下载
+							url:`http://14.116.217.62:8087/web/api/job/download/${val}`, //图片下载地址
+							success: res => {
+								if (res.statusCode === 200) {
+									uni.saveImageToPhotosAlbum({//保存图片到系统相册。
+										filePath: res.tempFilePath,//图片文件路径
+										success: function() {
+											uni.showToast({
+												title: '下载成功',
+												icon: 'none',
+											});
+										},
+										fail: function(e) {
+											console.log(e);
+											uni.showToast({
+												title: '下载失败',
+												icon: 'none',
+											});
+										}
+									});
+								}
+							}
+						});
+				
+			},
+			
 			//上传附件
 			UploadAttachment: function(){
 				console.log(1111111111)	
@@ -159,26 +214,6 @@
 			},
 			//提交作业
 			SubmitAssignments(){
-				const token = uni.getStorageSync("token")
-				uni.uploadFile({
-					url:"http://192.168.10.238:8087/web/api/job/upload",
-					filePath:this.imgArr[0],
-					name:"file",
-					 // formData: {
-					 //    courseId:           
-					 // },
-					header:{
-						"token":token
-					},
-					success: (res) => {
-						// uni.switchTab({
-						// 	url:"/pages/my/my"
-						// })
-					},
-					fail: (err) => {
-						console.log(err);
-					}
-				})
 				
 				this.$http.post("/web/api/job/submitJob",{
 					content:this.content,
@@ -198,17 +233,45 @@
 						});
 					}
 				})
+				
+				const token = uni.getStorageSync("token")
+				uni.uploadFile({
+					url: "http://14.116.217.62:8087/web/api/job/upload", //http://114.116.217.62:8087/				filePath:this.imgArr[0],
+					name:"file",
+					 formData: {
+					    courseId:this.courseId,
+						jobId:this.jobId,
+						file:this.file 	   
+					 },
+					header:{
+						"token":token
+					},
+					success: (res) => {
+						// uni.switchTab({
+						// 	url:"/pages/my/my"
+						// })
+					},
+					fail: (err) => {
+						console.log(err);
+					}
+				})
+				
+			
 			}
 		},
 		//过滤器
 		filters: {
 			formDate(val) {
+				if(!val){
+					return "";
+				}
 				return formatDate(val)
 			}
 		},
 		onLoad: function(val) {
 			this.jobId = val.jobId;
 			this.courseName = val.courseName;
+		    this.courseId = val.courseId;
 			this.$http.post("/web/api/job/jobDetails", {
 				jobId: val.jobId
 			}, {
@@ -217,15 +280,29 @@
 				},
 			}).then(res => {
 				console.log(res.data.data)
-				this.JobInformation = res.data.data;
-				
+				this.JobInformation = res.data.data.pushJob;
+				this.resourceList = res.data.data.resourceList.map( item => {
+					item.isimage = item.resourceName.slice(item.resourceName.lastIndexOf(".") + 1).toLowerCase();
+					return item;
+				})
 
 			})
+			this.$http.get("/web/api/info/info").then( res => {
+				console.log(res);
+				this.title = res.data.data.name;
+			});
 		}
 	}
 </script>
 
 <style>
+	.explain{
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
 	.myPage {
 		display: flex;
 		flex-direction: column;
@@ -264,7 +341,7 @@
 
 	.enclosure {
 		display: flex;
-		flex-direction: row;
+		flex-direction: column;
 		align-items: center;
 		border-bottom: 1rpx solid #C8C9CC;
 	}
@@ -289,4 +366,3 @@
 		text-overflow: ellipsis;
 	}
 </style>
-

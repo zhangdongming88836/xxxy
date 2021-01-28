@@ -2,11 +2,16 @@
 	<view class="">
 		<view class="myhear">
 			<view>
-				<text>深信院教学平台</text>
+				<text>{{title}}</text>
 			</view>
 		</view>
 		<view class="join">
-			<input v-model="username" class="uni-input" maxlength="10" placeholder="限10字" />
+			<!-- <input v-model="username" class="uni-input" maxlength="10" placeholder="限10字" /> -->
+			<u-form :model="form" ref="uForm">
+				<u-form-item prop="username"  class="uni-input">
+					<u-input v-model="form.username" focus />
+				</u-form-item>
+			</u-form>
 		</view>
 		<view class="pull-bottom">
 			<view class="">
@@ -20,34 +25,78 @@
 	export default {
 		data() {
 			return {
-				username:""
+				title:"",
+				form:{
+					username:""
+				},
+				rules: {
+					username: [{
+							required: true,
+							message: '请输入姓名',
+							// 可以单个或者同时写两个触发验证方式 
+							trigger: ['change', 'blur'],
+						},
+						// 正则中文
+						{
+							required: true,
+							pattern: /^[a-z\u4e00-\u9fa5]+$/gi,
+							// 正则检验前先将值转为字符串
+							transform(value) {
+								return String(value);
+							
+							},
+							message: '只能包含中文或字母',
+							trigger: ['change', 'blur'],
+						},
+					],
+					}
 			}
 		},
 		methods: {
 			ChangeName(){
-				this.$http.post("/web/api/user/updatePerson",{
-					userName:this.username
-				}).then( response => {
-					// console.log(response);
-					if(response.data.code == 200){
-						uni.showToast({
-						    title: `${response.data.msg}`,
-							icon:"none",
-						    duration: 2000
-						});
-						this.username = ""
-						uni.navigateBack({
-						    delta: 1
-						});
+				this.$refs.uForm.validate(valid => {
+					if (valid) {
+						// console.log('验证通过');
+					this.$http.post("/web/api/user/updatePerson",{
+						userName:this.form.username
+					}).then( response => {
+						// console.log(response);
+						if(response.data.code == 200){
+							uni.showToast({
+							    title: `${response.data.msg}`,
+								icon:"none",
+							    duration: 2000
+							});
+							this.form.username = ""
+							uni.navigateBack({
+							    delta: 1
+							});
+						}
+					})	
+							
+								
+							
+						
+					} else {
+						console.log('验证失败');
 					}
-				})
+				});
+				
 			}
+		},
+		// 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
+		onReady() {
+			this.$refs.uForm.setRules(this.rules);
 		},
 		onLoad:function(){
 			this.$http.get("/web/api/user/personage").then( res => {
 				 console.log(res.data.data)
-				this.username = res.data.data.userName;
+				this.form.username = res.data.data.userName;
 			})
+			this.$http.get("/web/api/info/info").then( res => {
+				console.log(res);
+				this.title = res.data.data.name;
+			});
 		}
 	}
 </script>
@@ -69,9 +118,9 @@
 	}
 
 	.uni-input {
-		height: 90rpx;
-		padding-left: 30rpx;
-		border: 1rpx solid #8F8F94;
+		width: 100%;
+		padding:20rpx;
+		/* border: 1rpx solid #8F8F94; */
 	}
 
 	.join-rg {

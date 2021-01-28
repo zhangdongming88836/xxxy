@@ -3,11 +3,16 @@
 		<view class="myPage">
 			<view class="myhear">
 				<view>
-					<text>深信院教学平台</text>
+					<text>{{title}}</text>
 				</view>
 			</view>
 		</view>
 		<view class="attendance">
+			<view class="">
+				<!-- <view class="">
+					<button type="primary" size="mini" @click="ScanCode">扫码签到</button>
+				</view> -->
+			</view>
 			<view class="attendance-prompt">
 				<view class="">
 					<text>请输入数字，手动完成签到</text>
@@ -41,9 +46,20 @@
 			return {
 				code: "",
 				courseId: '',
+				title:""
 			}
 		},
 		methods: {
+			//扫码签到
+			ScanCode(){
+				uni.scanCode({
+				    onlyFromCamera: true,
+				    success: function (res) {
+				        console.log('条码类型：' + res.scanType);
+				        console.log('条码内容：' + res.result);
+				    }
+				});
+			},
 			//签到
 			SignIn() {
 				/**************************************/
@@ -105,6 +121,14 @@
 		},
 		onLoad: function(val) {
 			this.courseId = val.courseId;
+			this.$http.get("/web/api/info/info").then( res => {
+				console.log(res);
+				this.title = res.data.data.name;
+			});
+			this.$http.get("/web/api/info/info").then( res => {
+				console.log(res);
+				this.title = res.data.data.name;
+			});
 		}
 	}
 </script>

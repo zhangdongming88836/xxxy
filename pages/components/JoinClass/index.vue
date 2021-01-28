@@ -43,7 +43,7 @@
 					console.log(res)
 					if(res.data.code == 200){
 						uni.navigateBack({
-						    delta: 2
+						    delta: 1
 						});
 					}else{
 						uni.showToast({

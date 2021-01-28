@@ -3,7 +3,7 @@
 		<view class="myPage">
 			<view class="myhear">
 				<view>
-					<text>深信院教学平台</text>
+					<text>{{title}}</text>
 				</view>
 			</view>
 		</view>
@@ -22,12 +22,19 @@
 				<text>作业内容：{{JobInformation.problem}}</text>
 			</view>
 			<view class="">
-				<text>作业附件：</text>
+				<text>老师作业附件：</text>
 			</view>
-			<view class="enclosure">
-				<text class="ClickDownload">下载</text>
-				<image src="../../../../static/function/px.png" mode="" class="enclosureImg"></image>
-				<text style="margin: 15rpx;">附件名字</text>
+			<view class="enclosure" v-for="item in resourceList" :key="item.id">
+				<view class="">
+					<image @click="previewPictures(item.visitUrl)" v-if="item.isimage == 'png' || item.isimage == 'bmp' || item.isimage == 'jpg' || item.isimage == 'jpeg '|| item.isimage == 'gif' "
+					 :src="'http://14.116.217.62:8087/web/file/'+item.saveUrl" class="enclosureImg"></image>
+					<video v-else-if="item.isimage == 'mp4' " :src="'http://14.116.217.62:8087/web/'+item.visitUrl" controls></video>
+					<audio :name="item.resourceName" v-else :src="'http://14.116.217.62:8087/web/'+item.visitUrl" controls></audio>
+				</view>
+				<view class="explain">
+					<text style="margin: 15rpx;" class="resourceName">{{item.resourceName}}</text>
+					<text class="ClickDownload" @click="DownloadTeacher(JobInformation.jobId)">下载</text>
+				</view>
 			</view>
 			<view class="">
 				<text>满分值：100.00分</text>
@@ -51,7 +58,7 @@
 				<text>逾期修改：允许</text>
 			</view>
 		</uni-card>
-		<uni-card title="学作业(长文本请从别的文件中复制过来)">
+		<uni-card title="写作业(长文本请从别的文件中复制过来)">
 			<!-- <view class="">
 				<text>首次提交时间：测试</text>
 			</view> -->
@@ -59,6 +66,26 @@
 				<text>提交时间：{{JobInformation.submitTime|formDate}}</text>
 			</view>
 			<view class="">
+				<text>学生作业附件：</text>
+			</view>
+			<view class="enclosure" v-for="items in resourceListStu" :key="items.id">
+				<!-- <text class="ClickDownload" @click="DownloadTeacher(JobInformation.jobId)" >下载</text> -->
+				<view class="">
+
+
+					<image v-if="items.isimage == 'png' || items.isimage == 'bmp' || items.isimage == 'jpg' || items.isimage == 'jpeg '|| items.isimage == 'gif' "
+					 @click="visit(items.saveUrl)" :src="'http://14.116.217.62:8087/web/file/'+items.saveUrl" mode="" class="enclosureImg"></image>
+					<video v-else-if="items.isimage == 'mp4' " :src="'http://14.116.217.62:8087/web/file/'+items.saveUrl" controls></video>
+					<audio :name="items.isimage" v-else :src="'http://14.116.217.62:8087/web/file/'+items.saveUrl" controls></audio>
+				</view>
+				<view class="explain">
+					<text style="margin: 15rpx;" class="resourceName">{{items.resourceName}}</text>
+
+
+				</view>
+			</view>
+			<view class="">
+				<label>作业内容：</label>
 				<uni-notice-bar :text="JobInformation.content"></uni-notice-bar>
 			</view>
 		</uni-card>
@@ -73,9 +100,9 @@
 				<text>评语：</text>
 				<uni-notice-bar :text="JobInformation.comment"></uni-notice-bar>
 			</view>
-			<view class="">
+			<!-- <view class="">
 				<text>附件：共0个</text>
-			</view>
+			</view> -->
 		</uni-card>
 		<uni-card title="作业上交不成功?">
 			<view class="">
@@ -88,7 +115,7 @@
 				<text>3、拍作业照片时相机分辨率可以调低一点,降低照片文件大小.</text>
 			</view>
 			<view class="">
-				<text>4、如果手机端交不了,还可以登录深圳职业信息技术网站www.dajdjai.com交作业。</text>
+				<text>4、如果手机端交不了,还可以登录电脑端提交作业。</text>
 			</view>
 		</uni-card>
 	</view>
@@ -108,18 +135,82 @@
 		data() {
 			return {
 				JobInformation: {},
-				courseName:"",
+				courseName: "",
+				resourceList: [],
+				resourceListStu: [],
+				title:""
 			}
 		},
 		methods: {
-			
+			//老师预览图片
+			previewPictures(val) {
+				uni.previewImage({
+					urls: ['http://14.116.217.62:8087/web/' + val],
+					longPressActions: {
+						success: function(data) {
+							console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
+						},
+						fail: function(err) {
+							console.log(err.errMsg);
+						}
+					}
+				});
+
+
+			},
+			//学生预览图片
+			visit(val) {
+				uni.previewImage({
+					urls: ['http://14.116.217.62:8087/web/file/' + val],
+					longPressActions: {
+						success: function(data) {
+							console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
+						},
+						fail: function(err) {
+							console.log(err.errMsg);
+						}
+					}
+				});
+			},
+			//下载老师的附件
+			DownloadTeacher(val) {
+				console.log(val)
+				uni.downloadFile({ //下载
+					url: `http://14.116.217.62:8087/web/api/job/download/${val}`, //图片下载地址
+					success: res => {
+						if (res.statusCode === 200) {
+							uni.saveImageToPhotosAlbum({ //保存图片到系统相册。
+								filePath: res.tempFilePath, //图片文件路径
+								success: function() {
+									uni.showToast({
+										title: '下载成功',
+										icon: 'none',
+									});
+								},
+								fail: function(e) {
+									console.log(e);
+									uni.showToast({
+										title: '下载失败',
+										icon: 'none',
+									});
+								}
+							});
+						}
+					}
+				});
+
+			}
 		},
 		filters: {
 			formDate(val) {
+				if (!val) {
+					return "";
+				}
 				return formatDate(val)
 			}
 		},
 		onLoad: function(val) {
+			this.jobId = val.jobId;
 			this.courseName = val.courseName;
 			this.$http.post("/web/api/job/jobDetails", {
 				jobId: val.jobId
@@ -129,15 +220,33 @@
 				},
 			}).then(res => {
 				console.log(res.data.data)
-				this.JobInformation = res.data.data;
-				
-
+				this.JobInformation = res.data.data.pushJob;
+				this.resourceList = res.data.data.resourceList.map(item => {
+					item.isimage = item.resourceName.slice(item.resourceName.lastIndexOf(".") + 1).toLowerCase();
+					return item;
+				})
+				this.resourceListStu = res.data.data.resourceListStu.map(item => {
+					item.isimage = item.resourceName.slice(item.resourceName.lastIndexOf(".") + 1).toLowerCase();
+					return item;
+				})
 			})
+			this.$http.get("/web/api/info/info").then( res => {
+				console.log(res);
+				this.title = res.data.data.name;
+			});
 		}
 	}
 </script>
 
 <style>
+	.explain {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
 	.myPage {
 		display: flex;
 		flex-direction: column;
@@ -153,7 +262,7 @@
 		position: fixed;
 		z-index: 1;
 		background-color: #EEFFBB;
-		top:0rpx;
+		top: 0rpx;
 	}
 
 	/********************************************************/
@@ -176,7 +285,7 @@
 
 	.enclosure {
 		display: flex;
-		flex-direction: row;
+		flex-direction: column;
 		align-items: center;
 		border-bottom: 1rpx solid #C8C9CC;
 	}
@@ -192,5 +301,12 @@
 		background-color: #007AFF;
 		border-radius: 8rpx;
 		margin: 15rpx;
+	}
+
+	.resourceName {
+		width: 200px;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
 	}
 </style>

@@ -8,8 +8,6 @@ import http from './utils/request.js'
 Vue.use(uView);
 Vue.config.productionTip = false
 Vue.prototype.$http = http
-
-
 App.mpType = 'app'
 
 const app = new Vue({

@@ -3,7 +3,7 @@
 		<view class="myPage">
 			<view class="myhear">
 				<view>
-					<text>深信院教学平台</text>
+					<text>{{title}}</text>
 				</view>
 			</view>
 		</view>
@@ -19,16 +19,16 @@
 			<!-- **************** -->
 			<view class="know">
 				<view class="know-out">
-					<text>出勤:{{signNum.sign0}}次</text>
+					<text>出勤:{{signNum.sign0||0}}次</text>
 				</view>
 				<view class="know-Lack">
-					<text>缺勤:{{signNum.sign1}}次</text>
+					<text>缺勤:{{signNum.sign1||0}}次</text>
 				</view>
 				<view class="know-late">
-					<text>迟到:{{signNum.sign2}}次</text>
+					<text>迟到:{{signNum.sign2||0}}次</text>
 				</view>
 				<view class="know-please">
-					<text>请假:{{signNum.sign3}}次</text>
+					<text>请假:{{signNum.sign3||0}}次</text>
 				</view>
 			</view>
 			<!-- ********************************* -->
@@ -36,10 +36,10 @@
 				<view class="list-row">
 					<view class="time">
 						<view class="">
-							<text>{{item.signTime|timedata}}</text>
+							<text>{{item.createTime|timedata }}</text>
 						</view>
 						<view class="week">
-							<text>星期{{item.signTime|timeDay}}</text>
+							<text>星期{{item.createTime|timeDay }}</text>
 						</view>
 					</view>
 					<view class="swarning">
@@ -62,6 +62,7 @@
 				course: {},
 				grade: {},
 				signNum: {},
+				title:"",
 			}
 		},
 		methods: {},

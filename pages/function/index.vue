@@ -3,14 +3,14 @@
 		<view class="myPage">
 			<view class="myhear">
 				<view>
-					<text>深信院教学平台</text>
+					<text>{{title}}</text>
 				</view>
 			</view>
 			<view class="information">
 				<view class="information-wrap">
 					<view class="information-left">
-						<view class="information-left-top">
-							<image :src="'http://192.168.10.238:8087/web/'+Details.avatar" mode="" class="left-top-img"></image>
+						<view class="information-left-top" @click="previewPictures">
+							<image :src="'http://14.116.217.62:8087/web/'+Details.avatar" mode="" class="left-top-img"></image>
 						</view>
 						<view class="username">
 							<text>{{Details.userName}}</text>
@@ -23,10 +23,10 @@
 						<view class="season">
 							<text>{{Details.semesterName}}</text>
 						</view>
-						<view class="introduce">
+						<!-- <view class="introduce">
 							<text>暂无课程简介</text>
-						</view>
-						<view class="Toview" @click="vitae">
+						</view> -->
+						<view class="Toview" @click="vitae(Details.courseIntroduction)">
 							<text>查看课程简介></text>
 						</view>
 					</view>
@@ -69,7 +69,7 @@
 			</view>
 			<!-- *********************************************************************** -->
 			<view class="areass">
-				<view class="students" @click="results(Details.courseName)">
+				<view class="students" @click="results({courseName:Details.courseName,courseId:Details.courseId})">
 					<view class="">
 						<image src="../../static/multiFunction/cj.png" mode="" class="icon"></image>
 					</view>
@@ -93,7 +93,7 @@
 						<text>电脑端</text>
 					</view>
 				</view>
-				<view class="students">
+				<view class="students" @click="Scancode(Details.courseId)">
 					<view class="">
 						<image src="../../static/multiFunction/dk.png" mode="" class="icon"></image>
 					</view>
@@ -219,9 +219,32 @@
 		     Details:{
 				 
 			 },	
+			 title:""
 			}
 		},
 		methods:{
+			//预览图片
+			previewPictures(){
+				console.log(11111111111)
+				   uni.previewImage({
+				            urls:['http://14.116.217.62:8087/web/'+ this.Details.avatar ],
+				            longPressActions: {
+				                success: function(data) {
+				                    console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
+				                },
+				                fail: function(err) {
+				                    console.log(err.errMsg);
+				                }
+				            }
+				        });
+			},
+			//执勤
+			Scancode(val){
+				uni.navigateTo({
+					url:"/pages/function/beOnDuty/index?Details="+val
+				})
+	
+			},
 			//在线练习
 			practice(val){
 				console.log(val)
@@ -250,7 +273,7 @@
 			//成绩
 			results(val){
 				uni.navigateTo({
-					url: "./results/index?courseName="+val
+					url: `./results/index?courseId=${val.courseId}&courseName=${val.courseName}`
 				});
 			},
 			//电脑端
@@ -266,10 +289,10 @@
 				});
 			},
 			//课程建立
-			vitae(){
+			vitae(val){
 				uni.showModal({
 				    title: '查看课程简介',
-				    content: '',
+				    content: val,
 				    success: function (res) {
 				        if (res.confirm) {
 				            console.log('用户点击确定');
@@ -286,6 +309,10 @@
 				console.log(res)
 				this.Details = res.data.data;
 			})
+			this.$http.get("/web/api/info/info").then( res => {
+				console.log(res);
+				this.title = res.data.data.name;
+			});
 		},
 		onShow:function() {
 			console.log( 'app onshow')

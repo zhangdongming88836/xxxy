@@ -3,7 +3,7 @@
 		<view class="myPage">
 			<view class="myhear">
 				<view>
-					<text>深信院教学平台</text>
+					<text>{{title}}</text>
 				</view>
 			</view>
 		</view>
@@ -39,8 +39,8 @@
 					</view>
 					<view class="" v-if="item.type == 0">
 						<radio-group  @change="radioChange($event,item)" class="radioxs">
-							<label class="radio" style="padding: 5rpx 0 5rpx 0;" v-for="items in item.arr" :key="items.id">
-								<radio :disabled="state" v-if="items.label" :value="items.value" />{{items.label}}</label>
+							<label v-if="items.label" class="radio" style="padding: 5rpx 0 5rpx 0;" v-for="items in item.arr" :key="items.id">
+								<radio :disabled="state"   :value="items.value" />{{items.value+'、'+items.label}}</label>
 						</radio-group>
 						<view class="" v-if="open">
 						<view class="">
@@ -48,7 +48,7 @@
 							<text style="padding-left:20rpx;">正确答案：{{item.correctAnswer}}</text>
 						</view>
 						<view class="">
-							<text>题目解析：{{item.analysis}}</text>
+							<text class="analysis">题目解析：qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq{{item.analysis}}</text>
 						</view>
 						</view>
 					</view>
@@ -66,16 +66,19 @@
 							<text style="padding-left:20rpx;">正确答案：{{item.correctAnswer}}</text>
 						</view>
 						<view class="">
-							<text>题目解析：{{item.analysis}}</text>
+							<text class="analysis">题目解析：{{item.analysis}}</text>
 						</view>
 						</view>
 					</view>
 				</view>
 			</view>
-			<view class="TestPaperbtn">
+			<view class="TestPaperbtn" v-if="this.list.length != 0 ">
 				<view class=""  v-if="Yess">
 					<button type="primary" size="mini" @click="deliver">完成并提交</button>
 				</view>
+			</view>
+			<view class="" v-else style="margin-top:300rpx;">
+				<text style="font-size: 30rpx;">老师还没有发布练习哦！！！！</text>
 			</view>
 		</view>
 		<!--   <view class="practice">
@@ -140,6 +143,7 @@
 				resultsList:[],
 				// u-radio-group的v-model绑定的值如果设置为某个radio的name，就会被默认选中
 				value: 'orange',
+				title:"",
 			}
 		},
 		methods: {
@@ -243,6 +247,10 @@
 				this.list = res.data.data.topicArrayList;
 				this.recordId = res.data.data.recordId;
 			})
+			this.$http.get("/web/api/info/info").then( res => {
+				console.log(res);
+				this.title = res.data.data.name;
+			});
 		}
 	}
 </script>
@@ -377,5 +385,11 @@
 		z-index: 1;
 		background-color: #EEFFBB;
 		top: 0rpx;
+	}
+	.analysis{
+		width:300rpx;
+		word-break : break-all ;   /* IE 允许词内换行 */
+		word-wrap : break-word ;   /* IE 内容将在边界内换行 */  
+		overflow : auto ;
 	}
 </style>

@@ -3,7 +3,7 @@
 		<view class="myPage">
 			<view class="myhear">
 				<view>
-					<text>深信院教学平台</text>
+					<text>{{title}}</text>
 				</view>
 			</view>
 		</view>
@@ -20,11 +20,18 @@
 			</view>
 			<view class="homework-sub">
 				<view class="JobList" v-for="item in jobList" :key="item.id">
-					<text>{{item.jobName}}</text>
+					<text>作业名称：{{item.jobName}}</text>
+					<text>题目名称：{{item.problem}}</text>
 					<view class="JobList-explain">
-						<text class="Tips" style="font-size: 15rpx;">个人作业</text>
+						<!-- <text class="Tips" style="font-size: 15rpx;">个人作业</text>
 						<text class="Tipsa" style="font-size: 15rpx;">指定格式</text>
-						<text class="Tipsb" style="font-size: 15rpx;">教师评分</text>
+						<text class="Tipsb" style="font-size: 15rpx;">教师评分</text> -->
+						<text v-if="item.statusub == 0 || item.statusub == 2 || item.statusub == 3" class="Tipsbs" style="font-size: 15rpx;" @click="ExcellentList(item.jobId)">优秀作业</text>
+						<!-- <text  class="Tipsbss" @click="ExcellentList(item.jobId)">2</text> -->
+					</view>
+					<view class="JobList-explain">
+						<text>创建日期：</text>
+						<text>{{item.createTime}}</text>
 					</view>
 					<view class="JobList-explain">
 						<text>截至日期：</text>
@@ -47,10 +54,13 @@
 						<text >{{item.score}}</text>
 					</view> -->
 					<view class="JobList-explain-right">
-						<text>评语：----></text>
+						<text v-if="item.statusub == 3" class="comment">退回原因：{{item.returnReason}}</text>
+						<text v-else class="comment"></text>
 						<view>
-							<button v-if="item.statusub == 1" type="primary" size="mini" @click="ToFinish({jobId:item.jobId,courseName:item.courseName})">去完成</button>
-							<button v-else type="primary" size="mini" @click="see({jobId:item.jobId,courseName:item.courseName})">查看</button>
+							<button v-if="item.statusub == 1" type="primary" size="mini"  @click="ToFinish({jobId:item.jobId,courseName:item.courseName})">去完成</button>
+							<button v-else-if="item.statusub == 0" type="primary" size="mini" plain="true" @click="see({jobId:item.jobId,courseName:item.courseName})">查看</button>
+							<button v-else-if="item.statusub == 2" type="primary" size="mini" plain="true" @click="see({jobId:item.jobId,courseName:item.courseName})">查看</button>
+							<button v-else type="warn" size="mini" @click="modify({jobId:item.jobId,courseName:item.courseName})">修改</button>
 						</view>
 					</view>
 				</view>
@@ -64,24 +74,44 @@
 	import {
 		formatDate
 	} from "../../../utils/tiem.js";
+	import uniTag from "@/components/uni-tag/uni-tag.vue"
 	export default {
+		
+		 components: {uniTag},  
+		
 		data() {
 			return {
 				gradeName: "",
 				courseName: "",
 				jobList: [],
-				courseId:""
+				courseId:"",
+				title:""  
 			}
 		},
 		methods: {
+			//优秀作业列表
+			ExcellentList(val){
+				// console.log(val)
+				uni.navigateTo({
+					url: `/pages/function/homework/ExcellentHomework/index?jobId=`+val
+				});
+			},
+			//修改作业
+			modify(val){
+				uni.navigateTo({
+					url: `/pages/function/homework/modify/index?jobId=${val.jobId}&courseName=${val.courseName}`
+				});
+			},
 			see(val) {
+				console.log(val)
 				uni.navigateTo({
 					url: `/pages/function/homework/OperationDetails/index?jobId=${val.jobId}&courseName=${val.courseName}`
 				});
 			},
 			ToFinish(val) {
+				//console.log(val)
 				uni.navigateTo({
-					url: `/pages/function/homework/ToFinish/index?jobId=${val.jobId}&courseName=${val.courseName}`
+					url: `/pages/function/homework/ToFinish/index?jobId=${val.jobId}&courseName=${val.courseName}&courseId=${this.courseId}`
 				});
 			 },
 			},
@@ -94,7 +124,7 @@
 						"Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
 					}
 				}).then(res => {
-					console.log(res.data.data)
+					// console.log(res.data.data)
 					this.gradeName = res.data.data.grade.gradeName;
 					this.courseName = res.data.data.course.courseName;
 					this.jobList =
@@ -106,12 +136,16 @@
 						})
 
 				})
+				this.$http.get("/web/api/info/info").then( res => {
+					console.log(res);
+					this.title = res.data.data.name;
+				});
 			},
 			onShow:function(){
-			  uni.$once("btn", (val) => {
-				  console.log(val)
-				  this.btn = val.btn;
-			  })
+			  // uni.$once("btn", (val) => {
+				 //  console.log(val,'================')
+				 //  this.btn = val.btn;
+			  // })
 				this.$http.post("/web/api/job/list", {
 					courseId: this.courseId
 				}, {
@@ -119,14 +153,15 @@
 						"Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
 					}
 				}).then(res => {
-					console.log(res.data.data)
+					// console.log(res.data.data)
 					this.gradeName = res.data.data.grade.gradeName;
 					this.courseName = res.data.data.course.courseName;
 					this.jobList =
 						res.data.data.jobList.map(item => {
 							item.checkTime = formatDate(item.checkTime);
 							item.deadline = formatDate(item.deadline);
-							item.submitTime = formatDate(item.submitTime)
+							item.submitTime = formatDate(item.submitTime);
+							item.createTime = formatDate(item.createTime);
 							return item
 						})
 				
@@ -135,7 +170,13 @@
 		}
 </script>
 
-<style>
+<style scoped>
+	.comment {
+		width:300rpx;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
 	.homework {
 		display: flex;
 		flex-direction: column;
@@ -166,7 +207,7 @@
 	.homework-sub {
 		width: 100%;
 		padding: 20rpx 30rpx 20rpx 30rpx;
-		border: 1rpx solid #999999;
+		/* border: 1rpx solid #999999; */
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -189,9 +230,18 @@
 		margin: 10rpx 0 0 0;
 		flex-direction: row;
 		align-items: center;
+		position: relative;
 		justify-content: space-around;
 	}
-
+  .Tipsbss{
+	  padding:10rpx 20rpx 10rpx 20rpx;
+	  border-radius:50%;
+	  background-color: #19BE6B;
+	  position: absolute;
+	  top:-30rpx;
+	  right:-20rpx;
+	  color: #FFFFFF;
+  }
 	.Tips {
 		font-size: 8rpx;
 		padding: 10rpx;
@@ -211,6 +261,13 @@
 		padding: 10rpx;
 		background-color: #C0C4CC;
 	}
+    .Tipsbs {
+    	font-size: 8rpx;
+    	/* margin-left: 10rpx; */
+    	padding: 10rpx;
+    	background-color:#007AFF;
+		color: #FFFFFF;
+    }
 
 	.JobList-explain-right {
 		width: 100%;

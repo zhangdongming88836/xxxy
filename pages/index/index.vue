@@ -20,23 +20,23 @@
 				<!-- ************************************************** -->
 				<view class="content-wrap-nr" v-if="show">
 					<view class="wrap-nr">
-						<text>您还没有加入班级!</text>
+						<text>您还没有加入班级或班级下还没有课程!</text>
 					</view>
 					<view class="wrap-nr">
 						<text>
-							请向老师或者已加入班级的同学索要班级二维码片，然后微信扫一扫进入班级。
+							请向老师或者已加入班级的同学索要班级码。
 						</text>
 					</view>
-					<view class="wrap-nr">
+				<!-- 	<view class="wrap-nr">
 						<text>
 							或者索要5位字母班级码。然后直接发送至对分易公众号。
 						</text>
-					</view>
+					</view> -->
 				</view>
 				<view class="Course-list" v-else v-for="(item,index) in list" :key="index">
 					<view class="Course-list-title">
 						<view class="year">
-							<text>{{item.semester}}</text>
+							<text>{{item.semesterName}}</text>
 						</view>
 					</view>
 					<view class="Course" @click="CourseDetails(item.courseId)">
@@ -60,7 +60,7 @@
 	export default {
 		data() {
 			return {
-				title: '深信院教学平台',
+				title: '',
 				show:true,
 				list:[
 						
@@ -105,16 +105,20 @@
 		},
 		onLoad:function() {
 		  this.$http.post("/web/api/course/list",{}).then( res => {
-		  	console.log(res)
+		  	//console.log(res)
 		  	this.list = res.data.data;
 		  	if(this.list.length > 0){
 		  		this.show = false
 		  	}
-		  })
+		  });
+		  this.$http.get("/web/api/info/info").then( res => {
+		  	console.log(res);
+		  	this.title = res.data.data.name;
+		  });
 		},
 		onShow: function() {
 			this.$http.post("/web/api/course/list",{}).then( res => {
-				console.log(res)
+				//console.log(res)
 				this.list = res.data.data;
 				if(this.list.length > 0){
 					this.show = false

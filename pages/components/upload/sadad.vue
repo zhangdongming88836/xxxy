@@ -42,7 +42,7 @@
 				console.log("submit",this.tempFiles);
 				const token = uni.getStorageSync("token")
 				uni.uploadFile({
-					url:"http://192.168.10.238:8087/web/api/user/photo",
+					url:"http://14.116.217.62:8087/web/api/user/photo",
 					filePath:this.imgUrl,
 					name:"file",
 					header:{
@@ -64,7 +64,7 @@
 			if (option.id == "null"){
 				this.imgUrl = "/static/touxiang.svg"
 			}else{
-				this.imgUrl = 'http://192.168.10.238:8087/web/file/'+option.id
+				this.imgUrl = 'http://14.116.217.62:8087/web/file/'+option.id
 			}
 		}
 	}

@@ -2,7 +2,7 @@
 	<view class="">
 		<view class="myhear">
 			<view>
-				<text>深信院教学平台</text>
+				<text>{{title}}</text>
 			</view>
 		</view>
 		<view class="join">
@@ -20,11 +20,17 @@
 	export default {
 		data() {
 			return {
-				
+			title:""	
 			}
 		},
 		methods: {
 			
+		},
+		onLoad:function(){
+			this.$http.get("/web/api/info/info").then( res => {
+				console.log(res);
+				this.title = res.data.data.name;
+			});
 		}
 	}
 </script>

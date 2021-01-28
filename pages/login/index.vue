@@ -1,6 +1,6 @@
 <template>
 	<view class="login">
-		<image class="img" src="../../static/fg1.jpg" mode=""></image>
+		<image class="img" :src="'http://14.116.217.62:8087//web/'+this.logo" mode=""></image>
 		<view class="loginBox">
 
 			<view class="username">
@@ -15,12 +15,17 @@
 			<view class="code">
 				<text class="code-t">验证码</text>
 				<input type="text" class="code-i" :value="code" @input="valec" placeholder="请输入验证码" />
-				<image class="c-img" :src="imgCode" mode="" @click="Code"></image>
+				<image class="c-img" :src="imgCode"  mode="" @click="Code"></image>
 			</view>
-			<button class="btn" @click="login" type="default">
-				登录
-			</button>
-			<text class="txt">注册和重置密码请联系老师</text>
+			<view class=" btns">
+				<button class="btn" @click="login" type="default">
+					登录
+				</button>
+				<button class="btnt" @click="register" type="default">
+					注册
+				</button>
+			</view>
+			<!-- <text class="txt">注册和重置密码请联系老师</text> -->
 		</view>
 	</view>
 
@@ -34,11 +39,18 @@
 				password: '',
 				code: "",
 				imgCode: "",
-				uuid: ""
+				uuid: "",
+				logo:"",
 			};
 		},
 
 		methods: {
+			//注册
+			register(){
+				uni.navigateTo({
+					url:"/pages/login/register/index"
+				})
+			},
 			//用户名
 			valu(e) {
 				this.username = e.detail.value;
@@ -59,10 +71,10 @@
 				return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
 			},
 			login() {
-				console.log(this.username);
-				console.log(this.password);
-				console.log(this.code);
-				console.log(this.uuid);
+				// console.log(this.username);
+				// console.log(this.password);
+				// console.log(this.code);
+				// console.log(this.uuid);
 				this.$http.post("/web/api/login", {
 					loginName: this.username,
 					password: this.password,
@@ -73,24 +85,38 @@
 						"Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
 					}
 				}).then(response => {
-					console.log(response.data)
-
-					if (response.data.code == 200) {
-
-						uni.switchTab({
-							url: "/pages/index/index",
-							success: () => {
-								uni.setStorage({
-									key: 'token',
-									data: response.data.data.token,
-								})
+					// console.log(response.data.data.user.loginName)
+					if (response.data.code == 200 && response.data.data.user.roleId == 3 ) {
+						 uni.setStorageSync("loginName",`${response.data.data.user.loginName}`);
+                          uni.setStorage({
+                          	key: 'token',
+                          	data: response.data.data.token,
+							success: function(){
+								uni.switchTab({
+									url: "/pages/index/index",
+								}); 
 							}
-						});
+                          });
 
-					} else {
+					} else  if(response.data.code == 200 && response.data.data.user.roleId != 3 ) {
 						// console.log('1111')
+						 this.username = "";
+						this.password = "";
+						 this.uuid = "";
+						this.cod = "";
 						uni.showToast({
-							title: response.data.msg,
+							title: "请用学生账号登录",
+							icon: "none",
+							duration: 2000
+						});
+						
+					}else if(response.data.code == 500 ){
+						this.username = "";
+						this.password = "";
+						 this.uuid = "";
+						this.cod = "";
+						uni.showToast({
+							title: `${response.data.msg}`,
 							icon: "none",
 							duration: 2000
 						});
@@ -103,7 +129,8 @@
 				let uuid = this.guid()
 				this.uuid = uuid
 				var num = Math.ceil(Math.random() * 10); //生成一个随机数（防止缓存）
-				this.imgCode = "http://192.168.10.238:8087/web/check/" + this.uuid + "?" + num;
+				this.imgCode = "http://14.116.217.62:8087//web/api/check/" + this.uuid + "?" + num;
+				
 			},
 		},
 		onLoad() {
@@ -112,6 +139,10 @@
 			// this.uuid = uuid
 			// this.imgCode = "http://10.178.205.245:8087/web/check/" + this.uuid ;
 			this.Code()
+			this.$http.get("/web/api/info/info").then( res => {
+				console.log(res);
+				this.logo = res.data.data.logo;
+			})
 		}
 
 	}
@@ -202,13 +233,24 @@
 			.btn {
 				width: 75%;
 				font-weight: 600;
-
+                background-color: #99ff99;
+				color: #666666;
 			}
-
+            .btnt{
+				width: 75%;
+				font-weight: 600;
+				background-color: #bbffee;
+				color: #666666;
+			}
 			.txt {
 				font-size: 12rpx;
 			}
 		}
-
+       .btns{
+		   width: 75%;
+		   display: flex;
+		   flex-direction: row;
+		   justify-content: space-between;
+	   }
 	}
 </style>
