@@ -1,7 +1,20 @@
 <script>
 	export default {
+		 globalData: {  
+		     courseId: "" ,
+		     gradeId:"",
+		     userId:"",
+		     courseName:"",
+		     jobId:"",
+		     attendanceId:"",
+		     zhujiao:false,
+		     userName:"",
+		     version:'v1.0.2',
+		     type:1
+		 },
 		onLaunch: function() {
 			console.log('App Launch')
+			     	
 		},
 		onShow: function() {
 			console.log('App Show')

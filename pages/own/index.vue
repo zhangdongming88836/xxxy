@@ -192,6 +192,20 @@
 					<text style="font-size:25rpx;">></text>
 				</view>
 			</view> -->
+			<view class="member" @click="edition">
+			    	<view class="member-el">
+			    		<view class="">
+			    		   <image class="identity-imgs" src="../../static/function/babn.png" mode=""></image>
+			    		</view>
+			    		<view class="">
+			    			<text class="font-wi">版本更新</text>
+			    		</view>
+			    	</view>
+			    	<view class="">
+			    		<text v-if="display" style="font-size: 25rpx;">></text>
+						<image v-else src="../../static/function/th.png" class="identity-imgs"  mode=""></image>
+			    	</view>
+			    </view>
 			<!-- 13 -->
 			<view class="member" @click="signOut">
 			    	<view class="member-el">
@@ -232,10 +246,16 @@
 				//个人信息
 			 personal:{},
 			 title:"",
+			 display:true,
 			}
 		},
 		methods:{
-//预览图片
+			//版本
+			edition(){
+				//console.log(111111111111)
+				this.$u.route("pages/own/edition/index");
+			},
+          //预览图片
 			previewPictures(){
 				console.log(11111111111)
 				   uni.previewImage({
@@ -304,8 +324,17 @@
 			this.$http.get("/web/api/user/personage").then( res => {
 				// console.log(res.data.data)
 				this.personal = res.data.data;
-			})
-		}
+			});
+			
+			//版本更新、
+			 this.$http.get( `/web/api/version/check/${getApp().globalData.type}/${getApp().globalData.version}`).then( res =>{
+				 if(res.data.code == 200){
+					this.display = false; 
+				 }else if(res.data.code == 201){
+					this.display = true; 
+				 }
+			 })
+	  }
 	}
 </script>
 

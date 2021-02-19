@@ -26,14 +26,14 @@
 			</view>
 			<view class="enclosure" v-for="item in resourceList" :key="item.id">
 				<view class="">
-					<image @click="previewPictures(item.visitUrl)" v-if="item.isimage == 'png' || item.isimage == 'bmp' || item.isimage == 'jpg' || item.isimage == 'jpeg '|| item.isimage == 'gif' "
+					<image @click="previewPictures(item.visitUrl)" v-if="item.isimage == 'png' || item.isimage == 'bmp' || item.isimage == 'jpg' || item.isimage == 'jpeg '|| item.isimage == 'gif' || item.isimage == 'xlsx' || item.isimage == 'TXT' || item.isimage == 'DOC' || item.isimage == 'XLS' || item.isimage == 'PPT'  || item.isimage == 'DOCX'  || item.isimage == 'PPTX' "
 					 :src="'http://14.116.217.62:8087/web/file/'+item.saveUrl" class="enclosureImg"></image>
 					<video v-else-if="item.isimage == 'mp4' " :src="'http://14.116.217.62:8087/web/'+item.visitUrl" controls></video>
 					<audio :name="item.resourceName" v-else :src="'http://14.116.217.62:8087/web/'+item.visitUrl" controls></audio>
 				</view>
 				<view class="explain">
 					<text style="margin: 15rpx;" class="resourceName">{{item.resourceName}}</text>
-					<text class="ClickDownload" @click="DownloadTeacher(JobInformation.jobId)">下载</text>
+					<text class="ClickDownload" @click="DownloadTeacher(item.resourceId)">下载</text>
 				</view>
 			</view>
 			<view class="">
@@ -159,7 +159,7 @@
 			DownloadTeacher(val){
 				console.log(val)
 				uni.downloadFile({//下载
-							url:`http://14.116.217.62:8087/web/api/job/download/${val}`, //图片下载地址
+							url:`http://14.116.217.62:8087/web/api/resource/download/${val}`, //图片下载地址
 							success: res => {
 								if (res.statusCode === 200) {
 									uni.saveImageToPhotosAlbum({//保存图片到系统相册。
@@ -240,8 +240,9 @@
 				const token = uni.getStorageSync("token")
 				if(this.imgArr.length>0){
 					uni.uploadFile({
-						url:"http://14.116.217.62:8087/web/api/job/upload",                                                  // 'http://localhost:8080/api/web/api/job/upload',       //http://114.116.217.62:8087/					filePath:this.imgArr[0],
+						url:"http://14.116.217.62:8087/web/api/job/upload",                                                  // 'http://localhost:8080/api/web/api/job/upload',       //http://11114.116.217.62:7/					filePath:this.imgArr[0],
 						name:"file",
+						filePath:this.imgArr[0],
 						 formData: {
 						    courseId:this.courseId,
 							jobId:this.jobId,

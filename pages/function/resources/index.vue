@@ -25,7 +25,7 @@
 					<image :src="'http://14.116.217.62:8087/web/'+item.visitUrl" mode="" class="OpenResourcesList-img"></image>
 				</view> -->
 				<view class="" >
-					<image @click="previewPictures(item.visitUrl)"   v-if="item.isimage == 'png' || item.isimage == 'bmp' || item.isimage == 'jpg' || item.isimage == 'jpeg '|| item.isimage == 'gif' "   :src="'http://14.116.217.62:8087/web/'+item.visitUrl" mode="" class="OpenResourcesList-img"></image>
+					<image @click="previewPictures(item.visitUrl)"   v-if="item.isimage == 'png' || item.isimage == 'bmp' || item.isimage == 'jpg' || item.isimage == 'jpeg '|| item.isimage == 'gif' || item.isimage == 'xlsx' || item.isimage == 'TXT' || item.isimage == 'DOC' || item.isimage == 'XLS' || item.isimage == 'PPT'  || item.isimage == 'DOCX'  || item.isimage == 'PPTX'"   :src="'http://14.116.217.62:8087/web/'+item.visitUrl" mode="" class="OpenResourcesList-img"></image>
 				    <video  v-else-if="item.isimage == 'mp4' " :src="'http://14.116.217.62:8087/web/'+item.visitUrl" controls class="OpenResourcesList-mp4"></video>
 				    <audio :name="item.resourceName"  v-else  :src="'http://14.116.217.62:8087/web/'+item.visitUrl"  controls></audio>
 				</view>

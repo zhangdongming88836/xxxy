@@ -18,7 +18,7 @@
 					<text>(满分10分)</text>
 				</view> -->
 				<view class="" v-if="appear">
-					<text>准去率：{{accuracy}}</text>
+					<text>正确率：{{accuracy}}</text>
 				</view>
 			</view>
 			<view style="width: 100%;" class="" v-for="(item,index) in list " :key="index">
@@ -48,7 +48,7 @@
 							<text style="padding-left:20rpx;">正确答案：{{item.correctAnswer}}</text>
 						</view>
 						<view class="">
-							<text class="analysis">题目解析：qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq{{item.analysis}}</text>
+							<text class="analysis">题目解析：{{item.analysis}}</text>
 						</view>
 						</view>
 					</view>

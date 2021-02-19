@@ -1,5 +1,4 @@
-// var baseURL = 'http://14.116.217.62'
-// // #ifdef APP-PLUS
+// var baseURL = 'http://14.116.217.62:// // #ifdef APP-PLUS
 //     baseURL = "http://14.116.217.62:8087/
 // // #endif
 
@@ -114,8 +113,8 @@ http.setConfig((config) => { /* config 为默认全局配置*/
 //请求拦截器
 http.interceptors.request.use((config) => { // 可使用async await 做异步操作
 	/*************************************/
-	// config.baseURL = 'http://localhost:8080/api'; /* 根域名 */
-	//config.baseURL = 'http://14.116.217.62'; /* 根域名 */
+	//config.baseURL = 'http://localhost:8080/api'; /* 根域名 */
+	//config.baseURL = 'http://14.116.217.62: /* 根域名 */
 	const token = uni.getStorageSync("token")
  	// console.log(token);
   //      config.header={

@@ -212,10 +212,92 @@
 				});
 			},
 			brief(){
-				uni.navigateTo({
-				    url: '../brief/index'
-				});
+				// this.doUpData();
+				    // var _this = this;
+				    // uni.request({
+				    // url: `${this.$store.state.apiBaseUrl}/users/versions`,  //请求接口
+				    // method: 'POST',
+				    // success: result => {
+				    //     if (result.data.code == 1) {
+				    //         plus.runtime.getProperty(plus.runtime.appid, function(inf) {
+				    //             if(inf.version != result.data.data.versions){
+				    //                 uni.showModal({
+				    //                     title: "发现新版本",
+				    //                     content: "确认下载更新",
+				    //                     success: (res) => {
+				    //                         if (res.confirm == true) {//当用户确定更新，执行更新
+				    //                             _this.doUpData();
+				    //                         }
+				    //                     }
+				    //                 })
+				    //             }
+				    //         });
+				    //     }
+				    // },
+				    // })
+				// uni.navigateTo({
+				    // url: '../brief/index'
+					// uni.downloadFile({//下载
+					// 			url:`http://14.116.217.62:8087/web/api/resource/download/202012313`, //图片下载地址
+					// 			success: res => {
+					// 				if (res.statusCode === 200) {
+					// 					uni.saveImageToPhotosAlbum({//保存图片到系统相册。
+					// 						filePath: res.tempFilePath,//图片文件路径
+					// 						success: function() {
+					// 							uni.showToast({
+					// 								title: '下载成功',
+					// 								icon: 'none',
+					// 							});
+					// 							  plus.runtime.openFile(res.tempFilePath);  
+					// 						},
+					// 						fail: function(e) {
+					// 							console.log(e);
+					// 							uni.showToast({
+					// 								title: '下载失败',
+					// 								icon: 'none',
+					// 							});
+					// 						}
+					// 					});
+					// 				}
+					// 			}
+					// 		});
+				// });
 			},
+			
+			// doUpData() {
+			//     uni.showLoading({
+			//         title: '更新中……'
+			//     })
+			//     uni.downloadFile({//执行下载
+			//         url: `http://14.116.217.62:8087/web/api/resource/download/202012313`, //下载地址
+			//         success: downloadResult => {//下载成功
+			//             uni.hideLoading();
+			//             if (downloadResult.statusCode == 200) {
+			//                 uni.showModal({
+			//                     title: '',
+			//                     content: '更新成功，确定现在重启吗？',
+			//                     confirmText: '重启',
+			//                     confirmColor: '#EE8F57',
+			//                     success: function(res) {
+			//                         if (res.confirm == true) {
+			//                             plus.runtime.install(//安装
+			//                                 downloadResult.tempFilePath, {
+			//                                     force: true
+			//                                 },
+			//                                 function(res) {
+			//                                     utils.showToast('更新成功，重启中');
+			//                                     plus.runtime.restart();
+			//                                 }
+			//                             );
+			//                         }
+			//                     }
+			//                 });
+			//             }
+			//         }
+			//     });
+			// },
+			
+			
 			// loginName(){
 			// 	uni.navigateTo({
 			// 	    url: '../LoginName/index'

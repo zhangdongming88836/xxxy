@@ -17,6 +17,10 @@
 				<input type="text" class="code-i" :value="code" @input="valec" placeholder="请输入验证码" />
 				<image class="c-img" :src="imgCode"  mode="" @click="Code"></image>
 			</view>
+            <view class="checked">
+            	<text class="use-t">记住密码</text>
+            	<u-switch v-model="checked" active-value="1" inactive-value="0" @change="checkeds"></u-switch>
+            </view>
 			<view class=" btns">
 				<button class="btn" @click="login" type="default">
 					登录
@@ -41,10 +45,16 @@
 				imgCode: "",
 				uuid: "",
 				logo:"",
+				checked:false,
 			};
 		},
 
 		methods: {
+			checkeds(val){
+				console.log(val)
+				
+				 uni.setStorageSync("checked",`${val}`);
+			},
 			//注册
 			register(){
 				uni.navigateTo({
@@ -87,7 +97,8 @@
 				}).then(response => {
 					// console.log(response.data.data.user.loginName)
 					if (response.data.code == 200 && response.data.data.user.roleId == 3 ) {
-						 uni.setStorageSync("loginName",`${response.data.data.user.loginName}`);
+						 uni.setStorageSync("loginName",`${this.username}`);
+						  uni.setStorageSync("password",`${this.password}`);
                           uni.setStorage({
                           	key: 'token',
                           	data: response.data.data.token,
@@ -134,6 +145,19 @@
 			},
 		},
 		onLoad() {
+			console.log(uni.getStorageSync("checked") )
+			console.log(uni.getStorageSync("loginName") )
+			console.log(uni.getStorageSync("password") )
+			  if(uni.getStorageSync("checked") == "1"){
+				  
+				  this.checked = true;
+				 this.username = uni.getStorageSync("loginName");
+				 this.password = uni.getStorageSync("password");
+			  }else{
+				  this.checked =  false;
+				 this.username = "";
+				 this.password = "";
+			  }
 			// const uuid =  Number(Math.random().toString().substr(3,length) + Date.now()).toString(36);
 
 			// this.uuid = uuid
@@ -184,7 +208,23 @@
 					flex: 1;
 				}
 			}
-
+            .checked {
+            	width:78%;
+            	display: flex;
+            	align-items: center;
+            
+            	.use-t {
+            		color: #999;
+            		width:80%;
+            	}
+            
+            	.use-i {
+            		border: 1px solid #ccc;
+            		height: 60rpx;
+            		margin-left: 16rpx;
+            		flex: 1;
+            	}
+            }  
 			.password {
 				display: flex;
 				align-items: center;

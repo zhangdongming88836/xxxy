@@ -33,7 +33,7 @@
 				</view>
 				<view class="explain">
 					<text style="margin: 15rpx;" class="resourceName">{{item.resourceName}}</text>
-					<text class="ClickDownload" @click="DownloadTeacher(JobInformation.jobId)">下载</text>
+					<text class="ClickDownload" @click="DownloadTeacher(item.resourceId)">下载</text>
 				</view>
 			</view>
 			<view class="">
@@ -73,7 +73,7 @@
 				<view class="">
 
 
-					<image v-if="items.isimage == 'png' || items.isimage == 'bmp' || items.isimage == 'jpg' || items.isimage == 'jpeg '|| items.isimage == 'gif' "
+					<image v-if="items.isimage == 'png' || items.isimage == 'bmp' || items.isimage == 'jpg' || items.isimage == 'jpeg '|| items.isimage == 'gif' || item.isimage == 'xlsx' || item.isimage == 'TXT' || item.isimage == 'DOC' || item.isimage == 'XLS' || item.isimage == 'PPT'  || item.isimage == 'DOCX'  || item.isimage == 'PPTX' "
 					 @click="visit(items.saveUrl)" :src="'http://14.116.217.62:8087/web/file/'+items.saveUrl" mode="" class="enclosureImg"></image>
 					<video v-else-if="items.isimage == 'mp4' " :src="'http://14.116.217.62:8087/web/file/'+items.saveUrl" controls></video>
 					<audio :name="items.isimage" v-else :src="'http://14.116.217.62:8087/web/file/'+items.saveUrl" controls></audio>
@@ -176,7 +176,7 @@
 			DownloadTeacher(val) {
 				console.log(val)
 				uni.downloadFile({ //下载
-					url: `http://14.116.217.62:8087/web/api/job/download/${val}`, //图片下载地址
+					url: `http://14.116.217.62:8087/web/api/resource/download/${val}`, //图片下载地址
 					success: res => {
 						if (res.statusCode === 200) {
 							uni.saveImageToPhotosAlbum({ //保存图片到系统相册。
